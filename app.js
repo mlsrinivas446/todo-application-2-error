@@ -66,11 +66,21 @@ const Authentication = (request, response, next) => {
   }
 
   if (date !== undefined) {
-    var result = format(new Date(date), 'yyyy-MM-dd')
-    var validDate = isValid(new Date(result))
-    if (validDate) {
-      response.query = result
-    } else {
+   try {
+      const myDate = new Date(date)
+
+      const formatDate = format(new Date(myDate), 'yyyy-MM-dd')
+
+      var validDate = isValid(new Date(date))
+
+      if (validDate === true) {
+        response.query = formatDate   // why response not send
+      } else {
+        response.status(400)
+        response.send('Invalid Due Date')
+        process.exit(1)
+      }
+    } catch {
       response.status(400)
       response.send('Invalid Due Date')
       process.exit(1)
